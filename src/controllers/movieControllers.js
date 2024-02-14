@@ -41,7 +41,7 @@ const postMovie = (req, res) => {
       res.status(201).send({ id: result.insertId });
     })
     .catch((err) => {
-      console.error(err);
+      // console.error(err);
       res.sendStatus(500);
     });
 };
