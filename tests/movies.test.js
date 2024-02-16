@@ -165,6 +165,42 @@ describe("PUT /api/movies/:id", () => {
   });
 });
 
+describe("DELETE /api/movies/:id", () => {
+  it("should delete movie", async () => {
+    const newMovie = {
+      title: "Requiem For a Dream",
+      director: "John",
+      year: "2004",
+      color: "2",
+      duration: 160,
+    };
+
+    const [result] = await database.query(
+      "INSERT INTO movies(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)",
+      [
+        newMovie.title,
+        newMovie.director,
+        newMovie.year,
+        newMovie.color,
+        newMovie.duration,
+      ]
+    );
+
+    const id = result.insertId;
+
+    const response = await request(app).delete(`/api/movies/${id}`);
+
+    expect(response.status).toEqual(204);
+
+    const [deletedMovie] = await database.query(
+      "SELECT * FROM movies WHERE id=?",
+      id
+    );
+
+    expect(deletedMovie.length).toEqual(0);
+  });
+});
+
 const database = require("../database");
 
 afterAll(() => database.end());
